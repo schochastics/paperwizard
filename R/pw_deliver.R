@@ -29,12 +29,18 @@ pw_deliver <- function(url, type = c("static", "dynamic")) {
 }
 
 .parse <- function(url, json) {
+    json[sapply(json, is.null)] <- NA
+    if (is.na(json$publishedTime)) {
+        datetime <- NA
+    } else {
+        datetime <- lubridate::as_datetime(json$publishedTime)
+    }
     tibble::tibble(
         url = url,
         expanded_url = "TODO",
         domain = adaR::ada_get_domain(url),
         status = 200, # TODO: better handling
-        datetime = lubridate::as_datetime(json$publishedTime),
+        datetime = datetime,
         author = json$byline,
         headline = json$title,
         text = json$textContent,

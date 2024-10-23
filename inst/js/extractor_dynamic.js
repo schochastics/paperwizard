@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const { Readability } = require('@mozilla/readability');
-const { JSDOM } = require('jsdom');
+const { parseHTML } = require('linkedom');
 
 const url = process.argv[2];
 const outputFilename = process.argv[3] || 'article.json';
@@ -17,9 +17,9 @@ async function extractArticle(url, outputFilename) {
 
     await browser.close();
 
-    const dom = new JSDOM(html, { url });
+    const { document } = parseHTML(html);
 
-    const reader = new Readability(dom.window.document);
+    const reader = new Readability(document);
     const article = reader.parse();
 
     fs.writeFileSync(outputFilename, JSON.stringify(article, null, 2));

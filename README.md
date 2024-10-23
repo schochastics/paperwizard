@@ -36,10 +36,10 @@ node -v
 This should return the version of Node.js installed.
 
 Once Node.js is installed, you need to install the necessary libraries which are
-JSDOM, Readability.js, puppeteer and axios.
+linkedom, Readability.js, puppeteer and axios.
 
 ```bash
-npm install jsdom @mozilla/readability puppeteer axios
+npm install linkedom @mozilla/readability puppeteer axios
 ```
 
 To make sure that the package knows where the command `node` is found, set 
