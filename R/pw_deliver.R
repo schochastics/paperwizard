@@ -24,9 +24,24 @@ pw_deliver <- function(url, type = c("static", "dynamic")) {
     # Read the generated JSON output from the specified file
     if (file.exists(file)) {
         article_content <- jsonlite::fromJSON(file)
+        # return(.parse(url, article_content))
         return(article_content)
     } else {
         stop("No output file found. Check if the script ran correctly.")
     }
     on.exit(unlink(file))
+}
+
+.parse <- function(url, json) {
+    tibble::tibble(
+        url = url,
+        expanded_url = "TODO",
+        domain = adaR::ada_get_domain(url),
+        status = 200, # TODO: better handling
+        datetime = lubridate::as_datetime(json$publishedTime),
+        author = json$byline,
+        headline = json$title,
+        text = json$textContent,
+        misc = list(json) # dump all
+    )
 }
