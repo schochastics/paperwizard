@@ -58,4 +58,4 @@ pw_deliver(url)
 
 ## pages that do not work
 
-- spiegel.de [#1]
+- spiegel.de [#1](https://github.com/schochastics/paperwizard/issues/1)
