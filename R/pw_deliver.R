@@ -7,14 +7,11 @@
 pw_deliver <- function(url, type = c("static", "dynamic")) {
     type <- match.arg(type)
     js_file <- paste0("extractor_", type, ".js")
-
     file <- tempfile(pattern = "article", fileext = "json")
 
     node_script <- system.file("js", js_file, package = "paperwizard")
-
     node_path <- getOption("paperwizard.node_path", "node")
-
-    result <- processx::run(node_path, c(node_script, url, file), error_on_status = TRUE, echo_cmd = TRUE)
+    result <- processx::run(node_path, c(node_script, url, file))
 
     # Check for any error in the process
     if (!is.null(result$stderr) && nchar(result$stderr) > 0) {
