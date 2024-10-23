@@ -10,6 +10,8 @@ articles) from webpages using
 Node.js to parse webpages and identify the main content of an article, allowing
 you to work with cleaner, structured content.
 
+The package is supposed to be an addon for [paperboy](https://github.com/jbgruber/paperboy).
+
 ## Installation
 
 You can install the development version of paperwizard like so:
