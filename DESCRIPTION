@@ -13,4 +13,5 @@ Imports:
     adaR,
     jsonlite,
     lubridate,
-    processx
+    processx,
+    tibble
