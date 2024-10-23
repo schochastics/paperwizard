@@ -42,3 +42,8 @@ JSDOM, Readability.js, puppeteer and axios.
 ```bash
 npm install jsdom @mozilla/readability puppeteer axios
 ```
+
+To make sure that the package knows where the command `node` is found, set 
+```r
+options(paperwizard.node_path = "/path/to/node")
+```
