@@ -24,13 +24,10 @@ remotes::install_github("schochastics/paperwizard")
 
 ## Setup
 
-To use `paperwizard`, you need to have Node.js installed. 
-
-Download and install Node.js from the [official
+To use `paperwizard`, you need to have Node.js installed. Download and install Node.js from the [official
 website](https://nodejs.org/en/download/package-manager). The page offers
-instructions for all major OS.
-
-After installing Node.js, you can confirm the installation by running the
+instructions for all major OS. After installing Node.js, you can confirm the
+installation by running the
 following command in your terminal.
 ```bash
 node -v
