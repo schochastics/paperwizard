@@ -4,22 +4,39 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of paperwizard is to ...
+`paperwizard` is an R package designed to extract readable content (such as news
+articles) from webpages using
+[Readability.js](https://github.com/mozilla/readability). This package leverages
+Node.js to parse webpages and identify the main content of an article, allowing
+you to work with cleaner, structured content.
 
 ## Installation
 
 You can install the development version of paperwizard like so:
 
 ``` r
-# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
+remotes::install_github("schochastics/paperwizard")
 ```
 
-## Example
+## Setup
 
-This is a basic example which shows you how to solve a common problem:
+To use `paperwizard`, you need to have Node.js installed. 
 
-``` r
-library(paperwizard)
-## basic example code
+Download and install Node.js from the [official
+website](https://nodejs.org/en/download/package-manager). The page offers
+instructions for all major OS.
+
+After installing Node.js, you can confirm the installation by running the
+following command in your terminal.
+```bash
+node -v
 ```
 
+This should return the version of Node.js installed.
+
+Once Node.js is installed, you need to install the necessary libraries which are
+JSDOM, Readability.js, puppeteer and axios.
+
+```bash
+npm install jsdom @mozilla/readability puppeteer axios
+```
