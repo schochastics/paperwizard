@@ -13,12 +13,10 @@ pw_deliver <- function(url, type = c("static", "dynamic")) {
     node_path <- getOption("paperwizard.node_path", "node")
     result <- processx::run(node_path, c(node_script, url, file))
 
-    # Check for any error in the process
     if (!is.null(result$stderr) && nchar(result$stderr) > 0) {
         stop("Error occurred during execution: ", result$stderr)
     }
 
-    # Read the generated JSON output from the specified file
     if (file.exists(file)) {
         article_content <- jsonlite::fromJSON(file)
         return(.parse(url, article_content))
