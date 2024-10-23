@@ -49,3 +49,13 @@ To make sure that the package knows where the command `node` is found, set
 ```r
 options(paperwizard.node_path = "/path/to/node")
 ```
+
+## Use
+
+```r
+pw_deliver(url)
+```
+
+## pages that do not work
+
+- spiegel.de [#1]
