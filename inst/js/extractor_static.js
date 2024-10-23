@@ -20,7 +20,6 @@ async function extractArticle(url, outputFilename) {
 
         fs.writeFileSync(outputFilename, JSON.stringify(article, null, 2));
 
-        console.log(`Article saved to ${outputFilename}`);
     } catch (err) {
         console.error(`Error fetching or parsing the article: ${err.message}`);
     }
