@@ -21,10 +21,9 @@ pw_deliver <- function(url, type = c("static", "dynamic")) {
     # Read the generated JSON output from the specified file
     if (file.exists(file)) {
         article_content <- jsonlite::fromJSON(file)
-        # return(.parse(url, article_content))
-        return(article_content)
+        return(.parse(url, article_content))
     } else {
-        stop("No output file found. Check if the script ran correctly.")
+        stop("No output found. Check if the script ran correctly.")
     }
     on.exit(unlink(file))
 }
