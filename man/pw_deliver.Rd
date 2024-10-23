@@ -4,12 +4,12 @@
 \alias{pw_deliver}
 \title{Scrape using Readability.js}
 \usage{
-pw_deliver(url, type = c("static", "dynamic"))
+pw_deliver(x, type = c("static", "dynamic"))
 }
 \arguments{
-\item{url}{The URL of the webpage to extract the article from.}
+\item{x}{Either a url or a data.frame returned by \link{paperboy::pb_collect}.}
 
-\item{type}{either "static" or "dynamic". Dynamic uses puppeteer}
+\item{type}{either "static" or "dynamic" if articles are scraped}
 }
 \value{
 The article content as a list (title and content).
