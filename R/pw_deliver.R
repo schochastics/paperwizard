@@ -1,8 +1,8 @@
 #' Scrape using Readability.js
 #'
-#' @param x Either a url or a data.frame returned by \link{paperboy::pb_collect}.
+#' @param x Either a vector of urls or a data.frame returned by \link{paperboy::pb_collect}.
 #' @param type either "static" or "dynamic" if articles are scraped
-#' @return The article content as a list (title and content).
+#' @return A tibble similar to the output of \link{paperboy::pb_deliver}.
 #' @export
 pw_deliver <- function(x, type = c("static", "dynamic")) {
     UseMethod("pw_deliver")
@@ -18,23 +18,27 @@ pw_deliver.character <- function(x, type = c("static", "dynamic")) {
     type <- match.arg(type)
 
     js_file <- paste0("extractor_", type, ".js")
-    file <- tempfile(pattern = "article", fileext = "json")
-
     node_script <- system.file("js", js_file, package = "paperwizard")
     node_path <- getOption("paperwizard.node_path", "node")
-    result <- processx::run(node_path, c(node_script, x, file))
+    res <- vector("list", length = length(x))
+    for (i in seq_along(x)) {
+        file <- tempfile(pattern = "article_", fileext = "json")
+        result <- processx::run(node_path, c(node_script, x[i], file))
 
-    if (!is.null(result$stderr) && nchar(result$stderr) > 0) {
-        stop("Error occurred during execution: ", result$stderr)
-    }
+        if (!is.null(result$stderr) && nchar(result$stderr) > 0) {
+            stop("Error occurred during execution: ", result$stderr)
+        }
 
-    if (file.exists(file)) {
-        article_content <- jsonlite::fromJSON(file)
-        return(.parse_remote(x, article_content))
-    } else {
-        stop("No output found. Check if the script ran correctly.")
+        if (file.exists(file)) {
+            article_content <- jsonlite::fromJSON(file)
+            res[[i]] <- .parse_remote(x[i], article_content)
+        } else {
+            warning("No output found. Check if the script ran correctly.")
+        }
+        unlink(file)
     }
     on.exit(unlink(file))
+    return(do.call("rbind", res))
 }
 
 #' @export
@@ -44,24 +48,30 @@ pw_deliver.data.frame <- function(x, type = c("static", "dynamic")) {
     }
 
     js_file <- paste0("extractor_", "local", ".js")
-    file <- tempfile(pattern = "article_", fileext = "json")
-    htmlfile <- tempfile(pattern = "article_", fileext = "html")
-    write(x$content_raw, htmlfile)
     node_script <- system.file("js", js_file, package = "paperwizard")
-    node_path <- getOption("paperwizard.node_path", "node")
-    result <- processx::run(node_path, c(node_script, htmlfile, file))
+    res <- vector("list", length = nrow(x))
+    for (i in seq_len(nrow(x))) {
+        file <- tempfile(pattern = "article_", fileext = "json")
+        htmlfile <- tempfile(pattern = "article_", fileext = "html")
+        write(x$content_raw[i], htmlfile)
 
-    if (!is.null(result$stderr) && nchar(result$stderr) > 0) {
-        stop("Error occurred during execution: ", result$stderr)
-    }
+        node_path <- getOption("paperwizard.node_path", "node")
+        result <- processx::run(node_path, c(node_script, htmlfile, file))
 
-    if (file.exists(file)) {
-        article_content <- jsonlite::fromJSON(file)
-        return(.parse_local(x, article_content))
-    } else {
-        stop("No output found. Check if the script ran correctly.")
+        if (!is.null(result$stderr) && nchar(result$stderr) > 0) {
+            stop("Error occurred during execution: ", result$stderr)
+        }
+
+        if (file.exists(file)) {
+            article_content <- jsonlite::fromJSON(file)
+            res[[i]] <- .parse_local(x[i, ], article_content)
+        } else {
+            warning("No output found. Check if the script ran correctly.")
+        }
+        unlink(c(file, htmlfile))
     }
     on.exit(unlink(c(file, htmlfile)))
+    return(do.call("rbind", res))
 }
 
 .parse_remote <- function(url, json) {
