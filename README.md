@@ -4,6 +4,8 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
+*(The current status of this package is "it works on my machine")*
+
 `paperwizard` is an R package designed to extract readable content (such as news
 articles) from webpages using
 [Readability.js](https://github.com/mozilla/readability). This package leverages
