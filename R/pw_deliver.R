@@ -1,8 +1,8 @@
 #' Scrape using Readability.js
 #'
-#' @param x Either a vector of urls or a data.frame returned by \link{paperboy::pb_collect}.
+#' @param x Either a vector of urls or a data.frame returned by [paperboy::pb_collect()].
 #' @param type either "static" or "dynamic" if articles are scraped
-#' @return A tibble similar to the output of \link{paperboy::pb_deliver}.
+#' @return A tibble similar to the output of [paperboy::pb_deliver()].
 #' @export
 pw_deliver <- function(x, type = c("static", "dynamic")) {
     UseMethod("pw_deliver")

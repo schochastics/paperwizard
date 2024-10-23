@@ -7,12 +7,12 @@
 pw_deliver(x, type = c("static", "dynamic"))
 }
 \arguments{
-\item{x}{Either a vector of urls or a data.frame returned by \link{paperboy::pb_collect}.}
+\item{x}{Either a vector of urls or a data.frame returned by \code{\link[paperboy:pb_collect]{paperboy::pb_collect()}}.}
 
 \item{type}{either "static" or "dynamic" if articles are scraped}
 }
 \value{
-A tibble similar to the output of \link{paperboy::pb_deliver}.
+A tibble similar to the output of \code{\link[paperboy:pb_deliver]{paperboy::pb_deliver()}}.
 }
 \description{
 Scrape using Readability.js
