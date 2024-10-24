@@ -13,7 +13,17 @@ async function extractArticle(inputHTMLFile, outputFilename) {
 
         const reader = new Readability(document);
         const article = reader.parse();
+        // Check if article has a publishedTime, if not, manually extract it
+        if (!article.publishedTime) {
+            const timeElement = document.querySelector('time');
 
+            if (timeElement) {
+                const datetime = timeElement.getAttribute('datetime');
+                if (datetime) {
+                    article.publishedTime = datetime;
+                }
+            }
+        }
         fs.writeFileSync(outputFilename, JSON.stringify(article, null, 2));
 
         console.log(`Article saved to ${outputFilename}`);
