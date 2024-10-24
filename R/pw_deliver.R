@@ -83,11 +83,11 @@ pw_deliver.data.frame <- function(x, type = c("static", "dynamic")) {
 }
 
 .parse_remote <- function(url, json) {
-    json[sapply(json, is.null)] <- NA
-    if (is.na(json$publishedTime)) {
-        datetime <- NA
+    json[sapply(json, is.null)] <- ""
+    if (json$publishedTime == "") {
+        datetime <- as.POSIXct(NA)
     } else {
-        datetime <- lubridate::as_datetime(json$publishedTime)
+        datetime <- .safe_date(json$publishedTime)
     }
     tibble::tibble(
         url = url,
@@ -105,9 +105,9 @@ pw_deliver.data.frame <- function(x, type = c("static", "dynamic")) {
 .parse_local <- function(x, json) {
     json[sapply(json, is.null)] <- ""
     if (json$publishedTime == "") {
-        datetime <- ""
+        datetime <- as.POSIXct(NA)
     } else {
-        datetime <- lubridate::as_datetime(json$publishedTime)
+        datetime <- .safe_date(json$publishedTime)
     }
     tibble::tibble(
         url = x$url,
@@ -128,10 +128,14 @@ pw_deliver.data.frame <- function(x, type = c("static", "dynamic")) {
         expanded_url = y$expanded_url,
         domain = y$domain,
         status = y$status,
-        datetime = "",
+        datetime = as.POSIXct(NA),
         author = "",
         headline = "",
         text = "",
         misc = list(NA_character_)
     )
+}
+
+.safe_date <- function(x) {
+    tryCatch(lubridate::as_datetime(x), error = function(e) as.POSIXct(NA))
 }
