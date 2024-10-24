@@ -51,6 +51,10 @@ pw_deliver.data.frame <- function(x, type = c("static", "dynamic")) {
     node_script <- system.file("js", js_file, package = "paperwizard")
     res <- vector("list", length = nrow(x))
     for (i in seq_len(nrow(x))) {
+        if (is.na(x$content_raw[i])) {
+            res[[i]] <- .empty_obj(x[i, ])
+            next()
+        }
         file <- tempfile(pattern = "article_", fileext = "json")
         htmlfile <- tempfile(pattern = "article_", fileext = "html")
         write(x$content_raw[i], htmlfile)
@@ -64,13 +68,17 @@ pw_deliver.data.frame <- function(x, type = c("static", "dynamic")) {
 
         if (file.exists(file)) {
             article_content <- jsonlite::fromJSON(file)
+            if (is.null(article_content)) {
+                res[[i]] <- .empty_obj(x[i, ])
+                next()
+            }
             res[[i]] <- .parse_local(x[i, ], article_content)
         } else {
             warning("No output found. Check if the script ran correctly.")
         }
         unlink(c(file, htmlfile))
     }
-    on.exit(unlink(c(file, htmlfile)))
+    # on.exit(unlink(c(file, htmlfile)))
     return(do.call("rbind", res))
 }
 
@@ -95,15 +103,15 @@ pw_deliver.data.frame <- function(x, type = c("static", "dynamic")) {
 }
 
 .parse_local <- function(x, json) {
-    json[sapply(json, is.null)] <- NA
-    if (is.na(json$publishedTime)) {
-        datetime <- NA
+    json[sapply(json, is.null)] <- ""
+    if (json$publishedTime == "") {
+        datetime <- ""
     } else {
         datetime <- lubridate::as_datetime(json$publishedTime)
     }
     tibble::tibble(
         url = x$url,
-        expanded_url = x$url,
+        expanded_url = x$expanded_url,
         domain = x$domain,
         status = x$status,
         datetime = datetime,
@@ -111,5 +119,19 @@ pw_deliver.data.frame <- function(x, type = c("static", "dynamic")) {
         headline = json$title,
         text = json$textContent,
         misc = list(json) # dump all
+    )
+}
+
+.empty_obj <- function(y) {
+    tibble::tibble(
+        url = y$url,
+        expanded_url = y$expanded_url,
+        domain = y$domain,
+        status = y$status,
+        datetime = "",
+        author = "",
+        headline = "",
+        text = "",
+        misc = list(NA_character_)
     )
 }
