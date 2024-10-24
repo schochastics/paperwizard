@@ -55,4 +55,4 @@ pw_deliver(url)
 ## Issues 
 
 - spiegel.de [#1](https://github.com/schochastics/paperwizard/issues/1) [FIXED]
-  but does return author and datetime
+  but does not return author and datetime
