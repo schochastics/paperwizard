@@ -32,21 +32,20 @@ following command in your terminal.
 ```bash
 node -v
 ```
-
 This should return the version of Node.js installed.
-
-Once Node.js is installed, you need to install the necessary libraries which are
-linkedom, Readability.js, puppeteer and axios.
-
-```bash
-npm install linkedom @mozilla/readability puppeteer axios
-```
 
 To make sure that the package knows where the command `node` is found, set 
 ```r
 options(paperwizard.node_path = "/path/to/node")
 ```
+if it is not installed in a standard location.
 
+Once Node.js is installed, you need to install the necessary libraries which are
+linkedom, Readability.js, puppeteer and axios.
+
+```r
+pw_npm_install()
+```
 ## Use
 
 ```r
