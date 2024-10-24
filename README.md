@@ -47,8 +47,16 @@ pw_npm_install()
 ```
 ## Use
 
+You can use it either by supplying a url
+
 ```r
 pw_deliver(url)
+```
+
+or a data.frame that was created by `paperboy::pb_collect()`
+```r
+x <- paperboy::pb_collect(list_or_urls)
+pw_deliver(x)
 ```
 
 ## Issues 
