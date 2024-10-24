@@ -21,7 +21,9 @@ pw_deliver.character <- function(x, type = c("static", "dynamic")) {
     node_script <- system.file("js", js_file, package = "paperwizard")
     node_path <- getOption("paperwizard.node_path", "node")
     res <- vector("list", length = length(x))
+    cli::cli_progress_bar("Parsing ", total = length(x))
     for (i in seq_along(x)) {
+        cli::cli_progress_update()
         file <- tempfile(pattern = "article_", fileext = "json")
         result <- processx::run(node_path, c(node_script, x[i], file))
 
@@ -37,6 +39,7 @@ pw_deliver.character <- function(x, type = c("static", "dynamic")) {
         }
         unlink(file)
     }
+    cli::cli_progress_done()
     on.exit(unlink(file))
     return(do.call("rbind", res))
 }
@@ -50,7 +53,9 @@ pw_deliver.data.frame <- function(x, type = c("static", "dynamic")) {
     js_file <- paste0("extractor_", "local", ".js")
     node_script <- system.file("js", js_file, package = "paperwizard")
     res <- vector("list", length = nrow(x))
+    cli::cli_progress_bar("Parsing ", total = nrow(x))
     for (i in seq_len(nrow(x))) {
+        cli::cli_progress_update()
         if (is.na(x$content_raw[i])) {
             res[[i]] <- .empty_obj(x[i, ])
             next()
@@ -78,6 +83,7 @@ pw_deliver.data.frame <- function(x, type = c("static", "dynamic")) {
         }
         unlink(c(file, htmlfile))
     }
+    cli::cli_progress_done()
     # on.exit(unlink(c(file, htmlfile)))
     return(do.call("rbind", res))
 }
