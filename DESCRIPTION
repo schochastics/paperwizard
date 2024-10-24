@@ -15,3 +15,5 @@ Imports:
     lubridate,
     processx,
     tibble
+URL: https://github.com/schochastics/paperwizard
+BugReports: https://github.com/schochastics/paperwizard/issues
