@@ -2,9 +2,8 @@
 # paperwizard <img src="man/figures/logo.png" align="right" height="139" alt="" />
 
 <!-- badges: start -->
+[![R-CMD-check](https://github.com/schochastics/paperwizard/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/schochastics/paperwizard/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
-
-*(The current status of this package is "it works on my machine")*
 
 `paperwizard` is an R package designed to extract readable content (such as news
 articles) from webpages using
