@@ -52,6 +52,7 @@ pw_npm_install()
 pw_deliver(url)
 ```
 
-## pages that do not work
+## Issues 
 
 - spiegel.de [#1](https://github.com/schochastics/paperwizard/issues/1) [FIXED]
+  but does return author and datetime
