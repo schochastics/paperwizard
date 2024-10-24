@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@mozilla/readability": "^0.5.0",
+    "axios": "^1.7.7",
+    "linkedom": "^0.18.5",
+    "puppeteer": "^23.6.0"
+  }
+}
