@@ -16,37 +16,12 @@ pw_deliver.default <- function(x, type = c("static", "dynamic")) {
 #' @export
 pw_deliver.character <- function(x, type = c("static", "dynamic")) {
     type <- match.arg(type)
-
-    js_file <- paste0("extractor_", type, ".js")
-    node_script <- system.file("js", js_file, package = "paperwizard")
-    node_path <- getOption("paperwizard.node_path", "node")
-    res <- vector("list", length = length(x))
-    cli::cli_progress_bar("Parsing ", total = length(x))
-    parsing_errors <- 0
-    for (i in seq_along(x)) {
-        cli::cli_progress_update()
-        file <- tempfile(pattern = "article_", fileext = "json")
-        result <- processx::run(node_path, c(node_script, x[i], file))
-
-        if (!is.null(result$stderr) && nchar(result$stderr) > 0) {
-            parsing_errors <- parsing_errors + 1
-            next()
-        }
-
-        if (file.exists(file)) {
-            article_content <- jsonlite::fromJSON(file)
-            res[[i]] <- .parse_remote(x[i], article_content)
-        } else {
-            warning("No output found. Check if the script ran correctly.")
-        }
-        unlink(file)
-    }
-    cli::cli_progress_done()
-    on.exit(unlink(file))
-    if (parsing_errors > 0) {
-        cli::cli_alert_warning("failed to parse {parsing_errors} url{?s}")
-    }
-    return(do.call("rbind", res))
+    parse_articles(
+        inputs = x,
+        js_type = type,
+        is_data_frame = FALSE,
+        parse_function = .parse_remote
+    )
 }
 
 #' @export
@@ -54,47 +29,84 @@ pw_deliver.data.frame <- function(x, type = c("static", "dynamic")) {
     if (!"content_raw" %in% colnames(x)) {
         stop("x must be a character vector of URLs or a data.frame returned by paperboy::pb_collect.")
     }
+    parse_articles(
+        inputs = x,
+        js_type = "local",
+        is_data_frame = TRUE,
+        parse_function = .parse_local
+    )
+}
 
-    js_file <- paste0("extractor_", "local", ".js")
+parse_articles <- function(inputs, js_type, is_data_frame = FALSE, parse_function) {
+    # Determine JS file and Node path
+    js_file <- paste0("extractor_", js_type, ".js")
     node_script <- system.file("js", js_file, package = "paperwizard")
-    res <- vector("list", length = nrow(x))
-    cli::cli_progress_bar("Parsing ", total = nrow(x))
+    node_path <- getOption("paperwizard.node_path", "node")
+    n <- ifelse(is_data_frame, nrow(inputs), length(inputs))
+    # Set up results and progress bar
+    res <- vector("list", length = n)
+    cli::cli_progress_bar("Parsing ", total = n)
     parsing_errors <- 0
-    for (i in seq_len(nrow(x))) {
+
+    if (is_data_frame) {
+        dat <- inputs[i, ]
+    } else {
+        dat <- inputs[i]
+    }
+
+    # Iterate over each input
+    for (i in seq_len(n)) {
         cli::cli_progress_update()
-        if (is.na(x$content_raw[i])) {
-            res[[i]] <- .empty_obj(x[i, ])
+
+        # Handle character vs data.frame specifics
+        if (is_data_frame && is.na(inputs$content_raw[i])) {
+            res[[i]] <- .empty_obj(dat)
             next()
         }
+
         file <- tempfile(pattern = "article_", fileext = "json")
-        htmlfile <- tempfile(pattern = "article_", fileext = "html")
-        write(x$content_raw[i], htmlfile)
 
-        node_path <- getOption("paperwizard.node_path", "node")
-        result <- processx::run(node_path, c(node_script, htmlfile, file))
+        # For data frames, write HTML content to a temporary file
+        if (is_data_frame) {
+            htmlfile <- tempfile(pattern = "article_", fileext = "html")
+            write(inputs$content_raw[i], htmlfile)
+            args <- c(node_script, htmlfile, file)
+        } else {
+            args <- c(node_script, inputs[i], file)
+        }
 
+        # Run the node script
+        result <- processx::run(node_path, args)
+
+        # Handle any errors in parsing
         if (!is.null(result$stderr) && nchar(result$stderr) > 0) {
             parsing_errors <- parsing_errors + 1
             next()
         }
 
+        # Parse result if file exists
         if (file.exists(file)) {
             article_content <- jsonlite::fromJSON(file)
-            if (is.null(article_content)) {
-                res[[i]] <- .empty_obj(x[i, ])
-                next()
+            res[[i]] <- if (is.null(article_content)) {
+                .empty_obj(dat)
+            } else {
+                parse_function(dat, article_content)
             }
-            res[[i]] <- .parse_local(x[i, ], article_content)
         } else {
             warning("No output found. Check if the script ran correctly.")
         }
-        unlink(c(file, htmlfile))
+
+        # Clean up temporary files
+        unlink(c(file, if (is_data_frame) htmlfile))
     }
+
     cli::cli_progress_done()
-    # on.exit(unlink(c(file, htmlfile)))
+
+    # Warning if there were parsing errors
     if (parsing_errors > 0) {
-        cli::cli_alert_warning("failed to parse {parsing_errors} url{?s}")
+        cli::cli_alert_warning("Failed to parse {parsing_errors} url{?s}")
     }
+
     return(do.call("rbind", res))
 }
 
