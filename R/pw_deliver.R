@@ -22,13 +22,15 @@ pw_deliver.character <- function(x, type = c("static", "dynamic")) {
     node_path <- getOption("paperwizard.node_path", "node")
     res <- vector("list", length = length(x))
     cli::cli_progress_bar("Parsing ", total = length(x))
+    parsing_errors <- 0
     for (i in seq_along(x)) {
         cli::cli_progress_update()
         file <- tempfile(pattern = "article_", fileext = "json")
         result <- processx::run(node_path, c(node_script, x[i], file))
 
         if (!is.null(result$stderr) && nchar(result$stderr) > 0) {
-            stop("Error occurred during execution: ", result$stderr)
+            parsing_errors <- parsing_errors + 1
+            next()
         }
 
         if (file.exists(file)) {
@@ -41,6 +43,9 @@ pw_deliver.character <- function(x, type = c("static", "dynamic")) {
     }
     cli::cli_progress_done()
     on.exit(unlink(file))
+    if (parsing_errors > 0) {
+        cli::cli_alert_warning("failed to parse {parsing_errors} url{?s}")
+    }
     return(do.call("rbind", res))
 }
 
@@ -54,6 +59,7 @@ pw_deliver.data.frame <- function(x, type = c("static", "dynamic")) {
     node_script <- system.file("js", js_file, package = "paperwizard")
     res <- vector("list", length = nrow(x))
     cli::cli_progress_bar("Parsing ", total = nrow(x))
+    parsing_errors <- 0
     for (i in seq_len(nrow(x))) {
         cli::cli_progress_update()
         if (is.na(x$content_raw[i])) {
@@ -68,7 +74,8 @@ pw_deliver.data.frame <- function(x, type = c("static", "dynamic")) {
         result <- processx::run(node_path, c(node_script, htmlfile, file))
 
         if (!is.null(result$stderr) && nchar(result$stderr) > 0) {
-            stop("Error occurred during execution: ", result$stderr)
+            parsing_errors <- parsing_errors + 1
+            next()
         }
 
         if (file.exists(file)) {
@@ -85,6 +92,9 @@ pw_deliver.data.frame <- function(x, type = c("static", "dynamic")) {
     }
     cli::cli_progress_done()
     # on.exit(unlink(c(file, htmlfile)))
+    if (parsing_errors > 0) {
+        cli::cli_alert_warning("failed to parse {parsing_errors} url{?s}")
+    }
     return(do.call("rbind", res))
 }
 
@@ -103,7 +113,7 @@ pw_deliver.data.frame <- function(x, type = c("static", "dynamic")) {
         datetime = datetime,
         author = json$byline,
         headline = json$title,
-        text = json$textContent,
+        text = .clean_text(json$textContent),
         misc = list(json) # dump all
     )
 }
@@ -123,25 +133,7 @@ pw_deliver.data.frame <- function(x, type = c("static", "dynamic")) {
         datetime = datetime,
         author = json$byline,
         headline = json$title,
-        text = json$textContent,
+        text = .clean_text(json$textContent),
         misc = list(json) # dump all
     )
-}
-
-.empty_obj <- function(y) {
-    tibble::tibble(
-        url = y$url,
-        expanded_url = y$expanded_url,
-        domain = y$domain,
-        status = y$status,
-        datetime = as.POSIXct(NA),
-        author = "",
-        headline = "",
-        text = "",
-        misc = list(NA_character_)
-    )
-}
-
-.safe_date <- function(x) {
-    tryCatch(lubridate::as_datetime(x), error = function(e) as.POSIXct(NA))
 }
