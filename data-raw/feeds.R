@@ -15,4 +15,4 @@ feeds <- tibble::tibble(
 res <- paperboy::pb_collect(feeds$link, ignore_fails = TRUE)
 res <- res |> dplyr::filter(status == 200)
 articles <- pw_deliver(res)
-pb_report(articles)
+pw_report(articles)

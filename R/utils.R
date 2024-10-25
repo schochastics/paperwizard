@@ -2,7 +2,7 @@
 #' @param x result from [pw_deliver()]
 #' @return nothing. called for side effects
 #' @export
-pb_report <- function(x) {
+pw_report <- function(x) {
     expect_cols <- c(
         "url", "expanded_url", "domain", "status", "datetime",
         "author", "headline", "text"
