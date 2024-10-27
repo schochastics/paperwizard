@@ -56,5 +56,5 @@ pw_report <- function(x) {
 }
 
 .safe_date <- function(x) {
-    tryCatch(lubridate::as_datetime(x), error = function(e) as.POSIXct(NA))
+    tryCatch(anytime::anytime(x), error = function(e) as.POSIXct(NA))
 }

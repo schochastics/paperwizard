@@ -2,6 +2,7 @@
 
 * fixed wrong percentage in `pw_report()`
 * fixed iterator being accessed outside loop
+* more reliable datetime parsing with `anytime`
 
 # paperwizard 0.1.0
 

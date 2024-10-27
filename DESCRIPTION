@@ -11,9 +11,9 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Imports: 
     adaR,
+    anytime,
     cli,
     jsonlite,
-    lubridate,
     processx,
     tibble
 URL: https://github.com/schochastics/paperwizard
