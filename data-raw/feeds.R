@@ -34,3 +34,6 @@ for (i in seq_len(nrow(feeds))) res[[i]] <- tryCatch(paperboy::pb_collect(feeds$
 res_tbl <- do.call("rbind", res) |> dplyr::filter(status == 200)
 articles <- pw_deliver(res_tbl)
 pw_report(articles)
+
+articles |>
+    dplyr::summarise(.by = domain, res = sum(is.na(datetime)))

@@ -48,16 +48,14 @@ parse_articles <- function(inputs, js_type, is_data_frame = FALSE, parse_functio
     cli::cli_progress_bar("Parsing ", total = n)
     parsing_errors <- 0
 
-    if (is_data_frame) {
-        dat <- inputs[i, ]
-    } else {
-        dat <- inputs[i]
-    }
-
     # Iterate over each input
     for (i in seq_len(n)) {
         cli::cli_progress_update()
-
+        if (is_data_frame) {
+            dat <- inputs[i, ]
+        } else {
+            dat <- inputs[i]
+        }
         # Handle character vs data.frame specifics
         if (is_data_frame && is.na(inputs$content_raw[i])) {
             res[[i]] <- .empty_obj(dat)
