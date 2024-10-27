@@ -26,7 +26,7 @@ pw_report <- function(x) {
         if (err == 0) {
             cli::cli_alert_success("no missing values for {col}.")
         } else {
-            percent <- round(err / nrow(x), 2)
+            percent <- round(err / nrow(x) * 100, 2)
             cli::cli_alert_warning("{err} ({percent}%) missing values for {col}.")
         }
     } else {
