@@ -36,4 +36,14 @@ articles <- pw_deliver(res_tbl)
 pw_report(articles)
 
 articles |>
-    dplyr::summarise(.by = domain, res = sum(is.na(datetime)))
+    dplyr::summarise(
+        .by = domain,
+        tot_date = sum(is.na(datetime)),
+        frac_date = tot_date / dplyr::n()
+    ) |>
+    dplyr::arrange(desc(frac_date), desc(tot_date))
+
+articles |>
+    dplyr::mutate(parsed = purrr::map_chr(misc, function(x) x$publishedTime)) |>
+    dplyr::select(domain, datetime, parsed) |>
+    dplyr::filter(is.na(datetime) & parsed != "")
