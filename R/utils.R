@@ -1,8 +1,9 @@
 #' Summary of delivered articles
 #' @param x result from [pw_deliver()]
+#' @param n integer cutoff when articles are considered too short (default 100)
 #' @return nothing. called for side effects
 #' @export
-pw_report <- function(x) {
+pw_report <- function(x, n = 100) {
     expect_cols <- c(
         "url", "expanded_url", "domain", "status", "datetime",
         "author", "headline", "text"
@@ -16,6 +17,16 @@ pw_report <- function(x) {
     }
     for (col in expect_cols) {
         .missing(x, col)
+    }
+    if ("text" %in% names(x)) {
+        text_len <- sapply(x$text, nchar)
+        short <- sum(text_len <= n)
+        if (short == 0) {
+            cli::cli_alert_success("all articles are longer than {n} characters .")
+        } else {
+            percent <- round(short / nrow(x) * 100, 2)
+            cli::cli_alert_warning("{short} ({percent}%) articles have less than {n} characters.")
+        }
     }
     return(invisible(NULL))
 }
