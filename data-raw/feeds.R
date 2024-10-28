@@ -1,3 +1,4 @@
+library(dplyr)
 url <- c(
     "https://rss.feedspot.com/world_news_rss_feeds/",
     "https://rss.feedspot.com/german_news_rss_feeds/",
@@ -47,3 +48,5 @@ articles |>
     dplyr::mutate(parsed = purrr::map_chr(misc, function(x) x$publishedTime)) |>
     dplyr::select(domain, datetime, parsed) |>
     dplyr::filter(is.na(datetime) & parsed != "")
+
+qs::qsave(articles, "data-raw/pw_deliver.qs")

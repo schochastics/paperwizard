@@ -2,3 +2,8 @@
 ^inst/js/node_modules$
 ^\.github$
 ^data-raw$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+index\.qmd
+index\.html

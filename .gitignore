@@ -5,3 +5,6 @@
 .DS_Store
 .quarto
 inst/js/node_modules
+docs
+index.html
+/.quarto/
