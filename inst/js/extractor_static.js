@@ -1,36 +1,48 @@
 const axios = require('axios');
-const fs = require('fs');
+const fs = require('fs').promises;
 const { Readability } = require('@mozilla/readability');
 const { parseHTML } = require('linkedom');
+const { JSDOM } = require("jsdom");
 
 const url = process.argv[2];
 const outputFilename = process.argv[3] || 'article.json';
 
+async function fetchHTML(url) {
+    try {
+        const response = await axios.get(url);
+        return response.data;
+    } catch (err) {
+        console.error(`Error fetching the HTML from ${url}:`, err.message);
+        throw err;
+    }
+}
+
+function extractPublishedTime(html) {
+    const dom = new JSDOM(html);
+    const timeElement = dom.window.document.querySelector('time');
+    if (timeElement) {
+        return timeElement.getAttribute('datetime') || timeElement.textContent || null;
+    }
+    return null;
+}
+
 async function extractArticle(url, outputFilename) {
     try {
-
-        const response = await axios.get(url);
-        const html = response.data;
-
+        const html = await fetchHTML(url);
         const { document } = parseHTML(html);
 
         const reader = new Readability(document);
         const article = reader.parse();
-        // Check if article has a publishedTime, if not, manually extract it
-        if (!article.publishedTime) {
-            const timeElement = document.querySelector('time');
 
-            if (timeElement) {
-                const datetime = timeElement.getAttribute('datetime');
-                if (datetime) {
-                    article.publishedTime = datetime;
-                }
-            }
+        if (!article.publishedTime) {
+            article.publishedTime = extractPublishedTime(html);
         }
-        fs.writeFileSync(outputFilename, JSON.stringify(article, null, 2));
+
+        await fs.writeFile(outputFilename, JSON.stringify(article, null, 2));
+        console.log(`Article saved to ${outputFilename}`);
 
     } catch (err) {
-        console.error(`Error fetching or parsing the article: ${err.message}`);
+        console.error(`Error processing the article: ${err.message}`);
     }
 }
 
