@@ -4,10 +4,12 @@
 \alias{pw_report}
 \title{Summary of delivered articles}
 \usage{
-pw_report(x)
+pw_report(x, n = 100)
 }
 \arguments{
 \item{x}{result from \code{\link[=pw_deliver]{pw_deliver()}}}
+
+\item{n}{integer cutoff when articles are considered too short (default 100)}
 }
 \value{
 nothing. called for side effects

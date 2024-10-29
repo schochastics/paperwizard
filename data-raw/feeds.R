@@ -34,7 +34,7 @@ for (i in seq_len(nrow(feeds))) res[[i]] <- tryCatch(paperboy::pb_collect(feeds$
 
 res_tbl <- do.call("rbind", res) |> dplyr::filter(status == 200)
 articles <- pw_deliver(res_tbl)
-pw_report(articles)
+pw_report(articles, n = 1000)
 
 articles |>
     dplyr::summarise(
