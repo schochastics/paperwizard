@@ -1,4 +1,4 @@
-# paperwizard 0.1.0.9000
+# paperwizard 0.2.0
 
 * fixed wrong percentage in `pw_report()`
 * fixed iterator being accessed outside loop
