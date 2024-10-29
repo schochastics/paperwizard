@@ -19,7 +19,7 @@ pw_report <- function(x, n = 100) {
         .missing(x, col)
     }
     if ("text" %in% names(x)) {
-        text_len <- sapply(x$text, nchar)
+        text_len <- nchar(x$text)
         short <- sum(text_len <= n)
         if (short == 0) {
             cli::cli_alert_success("all articles are longer than {n} characters .")
