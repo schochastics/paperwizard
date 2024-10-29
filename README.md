@@ -59,7 +59,4 @@ x <- paperboy::pb_collect(list_or_urls)
 pw_deliver(x)
 ```
 
-## Issues 
-
-- spiegel.de [#1](https://github.com/schochastics/paperwizard/issues/1) [FIXED]
-  but does not return author and datetime
+## Known sites with issues
