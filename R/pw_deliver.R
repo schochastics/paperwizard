@@ -38,17 +38,16 @@ pw_deliver.data.frame <- function(x, type = c("static", "dynamic")) {
 }
 
 parse_articles <- function(inputs, js_type, is_data_frame = FALSE, parse_function) {
-    # Determine JS file and Node path
     js_file <- paste0("extractor_", js_type, ".js")
     node_script <- system.file("js", js_file, package = "paperwizard")
     node_path <- getOption("paperwizard.node_path", "node")
     n <- ifelse(is_data_frame, nrow(inputs), length(inputs))
-    # Set up results and progress bar
+
     res <- vector("list", length = n)
     cli::cli_progress_bar("Parsing ", total = n)
     parsing_errors <- 0
 
-    # Iterate over each input
+
     for (i in seq_len(n)) {
         cli::cli_progress_update()
         if (is_data_frame) {
@@ -56,7 +55,7 @@ parse_articles <- function(inputs, js_type, is_data_frame = FALSE, parse_functio
         } else {
             dat <- inputs[i]
         }
-        # Handle character vs data.frame specifics
+
         if (is_data_frame && is.na(inputs$content_raw[i])) {
             res[[i]] <- .empty_obj(dat)
             next()
@@ -64,7 +63,6 @@ parse_articles <- function(inputs, js_type, is_data_frame = FALSE, parse_functio
 
         file <- tempfile(pattern = "article_", fileext = "json")
 
-        # For data frames, write HTML content to a temporary file
         if (is_data_frame) {
             htmlfile <- tempfile(pattern = "article_", fileext = "html")
             write(inputs$content_raw[i], htmlfile)
@@ -76,13 +74,11 @@ parse_articles <- function(inputs, js_type, is_data_frame = FALSE, parse_functio
         # Run the node script
         result <- processx::run(node_path, args)
 
-        # Handle any errors in parsing
         if (!is.null(result$stderr) && nchar(result$stderr) > 0) {
             parsing_errors <- parsing_errors + 1
             next()
         }
 
-        # Parse result if file exists
         if (file.exists(file)) {
             article_content <- jsonlite::fromJSON(file)
             res[[i]] <- if (is.null(article_content)) {
@@ -94,13 +90,11 @@ parse_articles <- function(inputs, js_type, is_data_frame = FALSE, parse_functio
             warning("No output found. Check if the script ran correctly.")
         }
 
-        # Clean up temporary files
         unlink(c(file, if (is_data_frame) htmlfile))
     }
 
     cli::cli_progress_done()
 
-    # Warning if there were parsing errors
     if (parsing_errors > 0) {
         cli::cli_alert_warning("Failed to parse {parsing_errors} url{?s}")
     }
