@@ -1,0 +1,85 @@
+# --------------------------------------------
+# CITATION file created with {cffr} R package
+# See also: https://docs.ropensci.org/cffr/
+# --------------------------------------------
+ 
+cff-version: 1.2.0
+message: 'To cite package "paperwizard" in publications use:'
+type: software
+license: MIT
+title: 'paperwizard: Scrape News Sites using ''readability.js'''
+version: 0.2.0.9000
+abstract: uses Mozillas readability.js to scrape text from websites.
+authors:
+- family-names: Schoch
+  given-names: David
+  email: david@schochastics.net
+  orcid: https://orcid.org/0000-0003-2952-4812
+repository-code: https://github.com/schochastics/paperwizard
+url: https://github.com/schochastics/paperwizard
+contact:
+- family-names: Schoch
+  given-names: David
+  email: david@schochastics.net
+  orcid: https://orcid.org/0000-0003-2952-4812
+references:
+- type: software
+  title: cli
+  abstract: 'cli: Helpers for Developing Command Line Interfaces'
+  notes: Imports
+  url: https://cli.r-lib.org
+  repository: https://CRAN.R-project.org/package=cli
+  authors:
+  - family-names: Csárdi
+    given-names: Gábor
+    email: csardi.gabor@gmail.com
+  year: '2024'
+  doi: 10.32614/CRAN.package.cli
+- type: software
+  title: jsonlite
+  abstract: 'jsonlite: A Simple and Robust JSON Parser and Generator for R'
+  notes: Imports
+  url: https://jeroen.r-universe.dev/jsonlite
+  repository: https://CRAN.R-project.org/package=jsonlite
+  authors:
+  - family-names: Ooms
+    given-names: Jeroen
+    email: jeroenooms@gmail.com
+    orcid: https://orcid.org/0000-0002-4035-0289
+  year: '2024'
+  identifiers:
+  - type: url
+    value: https://arxiv.org/abs/1403.2805
+  doi: 10.32614/CRAN.package.jsonlite
+- type: software
+  title: processx
+  abstract: 'processx: Execute and Control System Processes'
+  notes: Imports
+  url: https://processx.r-lib.org
+  repository: https://CRAN.R-project.org/package=processx
+  authors:
+  - family-names: Csárdi
+    given-names: Gábor
+    email: csardi.gabor@gmail.com
+    orcid: https://orcid.org/0000-0001-7098-9676
+  - family-names: Chang
+    given-names: Winston
+  year: '2024'
+  doi: 10.32614/CRAN.package.processx
+- type: software
+  title: tibble
+  abstract: 'tibble: Simple Data Frames'
+  notes: Imports
+  url: https://tibble.tidyverse.org/
+  repository: https://CRAN.R-project.org/package=tibble
+  authors:
+  - family-names: Müller
+    given-names: Kirill
+    email: kirill@cynkra.com
+    orcid: https://orcid.org/0000-0002-1416-3412
+  - family-names: Wickham
+    given-names: Hadley
+    email: hadley@rstudio.com
+  year: '2024'
+  doi: 10.32614/CRAN.package.tibble
+

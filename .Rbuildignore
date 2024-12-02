@@ -7,3 +7,11 @@
 ^pkgdown$
 index\.qmd
 index\.html
+^CITATION\.cff$
+^install\.R$
+^postBuild$
+^apt\.txt$
+^runtime\.txt$
+^_quarto\.yml$
+^\.quarto$
+^methodshub
