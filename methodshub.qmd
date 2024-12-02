@@ -33,7 +33,8 @@ This repository follows [the standard structure of an R package](https://cran.r-
 With R installed:
 
 ```r
-install.packages("paperwizard")
+install.packages("devtools")
+devtools::install_github("schochastics/paperwizard")
 ```
 
 <!-- ## Hardware Requirements (Optional) -->
