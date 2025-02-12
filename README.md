@@ -33,9 +33,9 @@ node -v
 ```
 This should return the version of Node.js installed.
 
-To make sure that the package knows where the command `npm` is found, set 
+To make sure that the package knows where the command `node` is found, set 
 ```r
-options(paperwizard.node_path = "/path/to/npm")
+options(paperwizard.node_path = "/path/to/node")
 ```
 if it is not installed in a standard location.
 
