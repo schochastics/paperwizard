@@ -70,6 +70,52 @@ The package does not require imput data besides URLs of news articles.
 2. The output data section should link to a small example output file in the same repository that can be re-created (as far as the method is non-random) from the input data (as described in the section "How to Use").
 -->
 
+After running `pw_deliver()`, **paperwizard** returns a clean and structured tibble that contains all essential information extracted from the target webpage. The output includes one row per successfully processed article and several standardized columns describing the article metadata and text content.
+
+```{r}
+url <- "https://theconversation.com/generative-ai-online-platforms-and-compensation-for-content-the-need-for-a-new-framework-242847"
+article <- paperwizard::pw_deliver(url)
+str(article)
+```
+
+```
+tibble [1 × 9] (S3: tbl_df/tbl/data.frame)
+ $ url         : chr "https://theconversation.com/generative-ai-online-platforms-and-compensation-for-content-the-need-for-a-new-framework-242847"
+ $ expanded_url: chr "https://theconversation.com/generative-ai-online-platforms-and-compensation-for-content-the-need-for-a-new-framework-242847"
+ $ domain      : chr "theconversation.com"
+ $ status      : num 200
+ $ datetime    : POSIXct[1:1], format: "2025-02-10 16:14:29"
+ $ author      : chr "Thomas Paris"
+ $ headline    : chr "Generative AI, online platforms and compensation for content: the need for a new framework"
+ $ text        : chr "The emergence of generative artificial intelligence has put the issue of compensation for content producers bac" ...
+ $ misc        :List of 1
+```
+
+### Field descriptions
+
+| Field | Description |
+|-------|--------------|
+| `url` | The original URL supplied to `pw_deliver()`. |
+| `expanded_url` | The resolved, fully expanded URL after redirects. |
+| `domain` | The domain name of the website. |
+| `status` | HTTP status code returned when fetching the page (e.g., 200 for success). |
+| `datetime` | The publication date and time (if detected). |
+| `author` | The article’s author. |
+| `headline` | The extracted headline of the article. |
+| `text` | The cleaned, readable article body as plain text. |
+| `misc` | A nested list containing the raw output from the Readability.js parser (useful for debugging or accessing additional metadata such as excerpt, site name, or word count). |
+
+A shortened example of the `misc` field:
+
+```{r}
+article$misc[[1]]
+# $title         "Generative AI, online platforms and compensation for content..."
+# $byline        "Thomas Paris"
+# $siteName      "The Conversation"
+# $excerpt       "How will content creators be compensated for material used by AI?"
+# $publishedTime "2025-02-10T16:14:29Z"
+```
+
 ## Hardware Requirements
 <!--
 1. The hardware requirements section should list all requirements (storage, memory, compute, GPUs, cluster software, ...) that exceed the capabilities of a cheap virtual machine provided by cloud computing company (2 x86 CPU core, 4 GB RAM, 40GB HDD).
@@ -97,7 +143,7 @@ devtools::install_github("schochastics/paperwizard")
 2. The how to use section should explain how to customize the steps to one's own needs, usually through configuration files or command line parameters, or refer to the appropriate open documentation.
 -->
 
-The package has one major function `pw_deliver()` which takes URLs as input and outputs a data.frame of article meta data and the text of the article.
+The package has one major function `pw_deliver()` which takes URLs as input and outputs a dataframe of article meta data and the text of the article.
 
 ## Technical Details
 <!--
