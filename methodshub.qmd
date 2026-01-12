@@ -64,7 +64,7 @@ Extracting content from news websites is a powerful tool for social science rese
 
 The package does not require imput data besides URLs of news articles.
 
-<!-- ## Output Data -->
+## Output Data
 <!--
 1. The output data section should illustrate the output data format by showing a (possibly abbreviated) example item and explaining (or linking to an explanation of) the data fields.
 2. The output data section should link to a small example output file in the same repository that can be re-created (as far as the method is non-random) from the input data (as described in the section "How to Use").
