@@ -54,9 +54,20 @@ ln -s ~/.quarto/opt/quarto/bin/tools/x86_64/pandoc ~/.quarto/opt/quarto/bin/tool
 echo
 echo Installed Quarto
 echo
+
 # install required python packages
 python3 -m pip install jupyterlab-quarto==0.1.45
 
 echo
-echo Completed
+echo Completed installation of python packages
+echo
+
+PAPERWIZARD_JS="$(R -q -e 'cat(system.file("js", package="paperwizard"))')"
+echo "paperwizard js dir: $PAPERWIZARD_JS"
+
+cd "$PAPERWIZARD_JS"
+npm ci
+
+echo
+echo paperwizard JS setup completed
 echo
