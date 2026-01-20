@@ -62,7 +62,7 @@ echo
 echo Completed installation of python packages
 echo
 
-PAPERWIZARD_JS="$(R -q -e 'cat(system.file("js", package="paperwizard"))')"
+PAPERWIZARD_JS="$(Rscript -e 'cat(system.file("js", package="paperwizard"))')"
 echo "paperwizard js dir: $PAPERWIZARD_JS"
 
 cd "$PAPERWIZARD_JS"
