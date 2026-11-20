@@ -4,6 +4,6 @@
     "axios": "^1.18.0",
     "jsdom": "^25.0.1",
     "linkedom": "^0.18.5",
-    "puppeteer": "^23.6.0"
+    "puppeteer": "^25.18.1"
   }
 }
